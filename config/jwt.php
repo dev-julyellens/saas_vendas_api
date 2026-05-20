@@ -168,8 +168,8 @@ return [
     */
 
     'persistent_claims' => [
-        // 'foo',
-        // 'bar',
+        'company_id',
+        'is_master',
     ],
 
     /*

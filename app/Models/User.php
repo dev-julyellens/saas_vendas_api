@@ -5,25 +5,29 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Models\Concerns\BelongsToCompany;
+use App\Core\Models\Concerns\HasRolesAndPermissions;
+use App\Modules\Auth\Models\UserSession;
 use App\Modules\Company\Models\Company;
-use App\Modules\Rbac\Models\Role;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 /**
- * Usuário autenticável — JWT stateless (API ONLY).
- * is_master: admin da plataforma com acesso irrestrito.
+ * Usuário autenticável — JWT stateless com controle de sessão por jti.
+ * is_master = Super Admin da plataforma.
  */
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements CanResetPassword, JWTSubject, MustVerifyEmail
 {
     use BelongsToCompany;
     use HasFactory;
+    use HasRolesAndPermissions;
     use HasUuids;
     use Notifiable;
     use SoftDeletes;
@@ -40,7 +44,10 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'is_active',
         'is_master',
+        'failed_login_attempts',
+        'locked_until',
         'last_login_at',
+        'email_verified_at',
     ];
 
     protected $hidden = [
@@ -53,9 +60,11 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'locked_until' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
             'is_master' => 'boolean',
+            'failed_login_attempts' => 'integer',
         ];
     }
 
@@ -77,32 +86,28 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Company::class);
     }
 
-    public function roles(): BelongsToMany
+    public function sessions(): HasMany
     {
-        return $this->belongsToMany(Role::class, 'role_user')
-            ->withPivot('company_id')
-            ->withTimestamps();
+        return $this->hasMany(UserSession::class);
     }
 
-    public function hasPermission(string $slug): bool
+    public function isLocked(): bool
     {
-        if ($this->is_master)
-        {
-            return true;
-        }
-
-        return $this->roles()
-            ->whereHas('permissions', fn($q) => $q->where('slug', $slug))
-            ->exists();
+        return $this->locked_until !== null && $this->locked_until->isFuture();
     }
 
-    public function hasRole(string $slug): bool
+    public function getEmailForPasswordReset(): string
     {
-        if ($this->is_master)
-        {
-            return true;
-        }
+        return $this->email;
+    }
 
-        return $this->roles()->where('slug', $slug)->exists();
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Modules\Auth\Notifications\ResetPasswordNotification($token));
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new \App\Modules\Auth\Notifications\VerifyEmailNotification);
     }
 }

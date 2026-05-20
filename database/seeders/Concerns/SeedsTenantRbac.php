@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Concerns;
 
+use App\Core\Enums\RoleSlug;
 use App\Modules\Company\Models\Company;
 use App\Modules\Rbac\Models\Permission;
 use App\Modules\Rbac\Models\Role;
@@ -46,7 +47,9 @@ trait SeedsTenantRbac
     }
 
     /**
-     * @return array{admin: Role, manager: Role, representative: Role, reseller: Role}
+     * Perfis: Empresa, Operacional, Representante, Revendedor.
+     *
+     * @return array{empresa: Role, operacional: Role, representante: Role, revendedor: Role}
      */
     protected function seedDefaultRoles(Company $company, Collection $permissions): array
     {
@@ -55,27 +58,27 @@ trait SeedsTenantRbac
             ->mapWithKeys(fn(Permission $p) => [$p->id => ['company_id' => $company->id]])
             ->all();
 
-        $admin = Role::query()->withoutGlobalScopes()->updateOrCreate(
-            ['company_id' => $company->id, 'slug' => 'admin'],
+        $empresa = Role::query()->withoutGlobalScopes()->updateOrCreate(
+            ['company_id' => $company->id, 'slug' => RoleSlug::Empresa->value],
             [
-                'name' => 'Administrador',
-                'description' => 'Acesso total ao tenant',
+                'name' => 'Empresa',
+                'description' => 'Administrador do tenant — acesso total',
                 'is_system' => true,
             ]
         );
-        $admin->permissions()->sync(
+        $empresa->permissions()->sync(
             $permissions->mapWithKeys(fn(Permission $p) => [$p->id => ['company_id' => $company->id]])->all()
         );
 
-        $manager = Role::query()->withoutGlobalScopes()->updateOrCreate(
-            ['company_id' => $company->id, 'slug' => 'manager'],
+        $operacional = Role::query()->withoutGlobalScopes()->updateOrCreate(
+            ['company_id' => $company->id, 'slug' => RoleSlug::Operacional->value],
             [
-                'name' => 'Gerente',
-                'description' => 'Operação comercial e financeira',
+                'name' => 'Operacional',
+                'description' => 'Operações do dia a dia (estoque, vendas, consignação)',
                 'is_system' => true,
             ]
         );
-        $manager->permissions()->sync($pivot([
+        $operacional->permissions()->sync($pivot([
             'products.manage',
             'products.view',
             'categories.manage',
@@ -85,22 +88,19 @@ trait SeedsTenantRbac
             'sales.manage',
             'sales.view',
             'returns.manage',
-            'commissions.manage',
-            'financial.manage',
-            'representatives.manage',
-            'resellers.manage',
             'customers.manage',
+            'resellers.manage',
         ]));
 
-        $representative = Role::query()->withoutGlobalScopes()->updateOrCreate(
-            ['company_id' => $company->id, 'slug' => 'representative'],
+        $representante = Role::query()->withoutGlobalScopes()->updateOrCreate(
+            ['company_id' => $company->id, 'slug' => RoleSlug::Representante->value],
             [
                 'name' => 'Representante',
-                'description' => 'Consignação e vendas da carteira',
+                'description' => 'Carteira de revendedores e consignação',
                 'is_system' => true,
             ]
         );
-        $representative->permissions()->sync($pivot([
+        $representante->permissions()->sync($pivot([
             'products.view',
             'consignment.manage',
             'consignment.view',
@@ -110,21 +110,21 @@ trait SeedsTenantRbac
             'customers.manage',
         ]));
 
-        $reseller = Role::query()->withoutGlobalScopes()->updateOrCreate(
-            ['company_id' => $company->id, 'slug' => 'reseller'],
+        $revendedor = Role::query()->withoutGlobalScopes()->updateOrCreate(
+            ['company_id' => $company->id, 'slug' => RoleSlug::Revendedor->value],
             [
                 'name' => 'Revendedor',
-                'description' => 'Consulta de consignação e registro de vendas',
+                'description' => 'Vendas e consulta de consignação',
                 'is_system' => true,
             ]
         );
-        $reseller->permissions()->sync($pivot([
+        $revendedor->permissions()->sync($pivot([
             'products.view',
             'consignment.view',
             'sales.manage',
             'sales.view',
         ]));
 
-        return compact('admin', 'manager', 'representative', 'reseller');
+        return compact('empresa', 'operacional', 'representante', 'revendedor');
     }
 }

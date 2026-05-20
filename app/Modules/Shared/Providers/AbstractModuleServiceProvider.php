@@ -29,7 +29,7 @@ abstract class AbstractModuleServiceProvider extends ServiceProvider
             return;
         }
 
-        Route::middleware(['api', 'auth:api', 'tenant', 'tenant.company'])
+        Route::middleware(['api', 'auth.api', 'tenant', 'tenant.company'])
             ->prefix('api/v1')
             ->group($routesFile);
     }

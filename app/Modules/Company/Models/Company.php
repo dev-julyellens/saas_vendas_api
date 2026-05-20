@@ -29,6 +29,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Company extends Model
 {
     use HasFactory;
+
+    protected static function newFactory(): \Database\Factories\CompanyFactory
+    {
+        return \Database\Factories\CompanyFactory::new();
+    }
     use HasUuids;
     use SoftDeletes;
 

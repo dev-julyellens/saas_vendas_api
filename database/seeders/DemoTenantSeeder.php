@@ -49,7 +49,7 @@ class DemoTenantSeeder extends Seeder
         );
 
         $user->roles()->sync([
-            $roles['admin']->id => ['company_id' => $company->id],
+            $roles['empresa']->id => ['company_id' => $company->id],
         ]);
 
         $this->seedDemoCatalog($company);

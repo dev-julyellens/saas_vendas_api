@@ -26,9 +26,10 @@ API: `http://localhost:8080/api`
 
 Login demo: `admin@demo.com` / `password123`
 
-## Documentação de arquitetura
+## Documentação
 
-Ver [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+- [Arquitetura](docs/ARCHITECTURE.md)
+- [Autenticação e autorização (API)](docs/API_AUTH.md)
 
 ## Estrutura de pastas
 

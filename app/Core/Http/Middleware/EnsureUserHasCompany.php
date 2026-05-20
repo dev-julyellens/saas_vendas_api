@@ -15,15 +15,25 @@ class EnsureUserHasCompany
     {
         $user = $request->user();
 
-        if ($user === null || $user->company_id === null)
+        if ($user === null)
         {
             return response()->json([
                 'success' => false,
-                'message' => 'Usuário sem empresa vinculada.',
-                'code' => 'TENANT_NOT_ASSIGNED',
-            ], 403);
+                'message' => 'Não autenticado.',
+                'code' => 'UNAUTHENTICATED',
+            ], 401);
         }
 
-        return $next($request);
+        // Super Admin opera fora do tenant — rotas de plataforma usam middleware super-admin
+        if ($user->is_master || $user->company_id !== null)
+        {
+            return $next($request);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Usuário sem empresa vinculada.',
+            'code' => 'TENANT_NOT_ASSIGNED',
+        ], 403);
     }
 }
