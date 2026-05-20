@@ -8,6 +8,7 @@ use App\Core\Enums\StockMovementType;
 use App\Core\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use App\Modules\Consignment\Models\ConsignmentOperation;
 use App\Modules\Reseller\Models\Reseller;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -28,6 +29,7 @@ class StockMovement extends BaseModel
         'unit_cost',
         'reference_type',
         'reference_id',
+        'consignment_operation_id',
         'notes',
         'occurred_at',
         'created_by',
@@ -56,6 +58,11 @@ class StockMovement extends BaseModel
     public function reference(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function consignmentOperation(): BelongsTo
+    {
+        return $this->belongsTo(ConsignmentOperation::class);
     }
 
     public function createdBy(): BelongsTo

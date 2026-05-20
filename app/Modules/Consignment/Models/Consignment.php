@@ -6,12 +6,12 @@ namespace App\Modules\Consignment\Models;
 
 use App\Core\Enums\ConsignmentStatus;
 use App\Core\Models\BaseModel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Core\Models\Concerns\HasStockMovements;
 use App\Modules\Representative\Models\Representative;
 use App\Modules\Reseller\Models\Reseller;
 use App\Modules\ReturnOrder\Models\ReturnOrder;
 use App\Modules\Sale\Models\Sale;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -28,6 +28,8 @@ class Consignment extends BaseModel
         'status',
         'consigned_at',
         'expected_return_at',
+        'dispatched_at',
+        'collected_at',
         'closed_at',
         'notes',
     ];
@@ -38,6 +40,8 @@ class Consignment extends BaseModel
             'status' => ConsignmentStatus::class,
             'consigned_at' => 'date',
             'expected_return_at' => 'date',
+            'dispatched_at' => 'datetime',
+            'collected_at' => 'datetime',
             'closed_at' => 'datetime',
         ];
     }
@@ -57,6 +61,11 @@ class Consignment extends BaseModel
         return $this->hasMany(ConsignmentItem::class);
     }
 
+    public function operations(): HasMany
+    {
+        return $this->hasMany(ConsignmentOperation::class);
+    }
+
     public function sales(): HasMany
     {
         return $this->hasMany(Sale::class);
@@ -65,5 +74,15 @@ class Consignment extends BaseModel
     public function returns(): HasMany
     {
         return $this->hasMany(ReturnOrder::class);
+    }
+
+    public function isDispatched(): bool
+    {
+        return $this->dispatched_at !== null;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->status === ConsignmentStatus::Fechado;
     }
 }

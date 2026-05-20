@@ -117,9 +117,10 @@ class DemoTenantSeeder extends Seeder
             [
                 'reseller_id' => $reseller->id,
                 'representative_id' => $representative->id,
-                'status' => ConsignmentStatus::Active,
+                'status' => ConsignmentStatus::Aberto,
                 'consigned_at' => now()->toDateString(),
                 'expected_return_at' => now()->addDays(30)->toDateString(),
+                'dispatched_at' => now(),
             ]
         );
 

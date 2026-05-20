@@ -30,6 +30,7 @@ Login demo: `admin@demo.com` / `password123`
 
 - [Arquitetura](docs/ARCHITECTURE.md)
 - [Autenticação e autorização (API)](docs/API_AUTH.md)
+- [Consignado (API)](docs/API_CONSIGNMENT.md)
 
 ## Estrutura de pastas
 

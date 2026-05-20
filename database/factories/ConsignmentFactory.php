@@ -25,7 +25,7 @@ class ConsignmentFactory extends Factory
             'reseller_id' => Reseller::factory(),
             'representative_id' => Representative::factory(),
             'code' => strtoupper(fake()->unique()->bothify('CONS-####')),
-            'status' => ConsignmentStatus::Draft,
+            'status' => ConsignmentStatus::Aberto,
             'consigned_at' => now()->toDateString(),
             'expected_return_at' => now()->addDays(30)->toDateString(),
             'closed_at' => null,

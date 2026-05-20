@@ -194,14 +194,14 @@ return new class extends Migration
 
         if ($this->isPostgres())
         {
-            DB::statement('ALTER TABLE consignments ADD COLUMN status consignment_status NOT NULL DEFAULT \'draft\'');
+            DB::statement("ALTER TABLE consignments ADD COLUMN status consignment_status NOT NULL DEFAULT 'aberto'");
         }
         else
         {
             Schema::table('consignments', function (Blueprint $table)
             {
                 $table->enum('status', ConsignmentStatus::values())
-                    ->default(ConsignmentStatus::Draft->value)
+                    ->default(ConsignmentStatus::Aberto->value)
                     ->after('code');
             });
         }
