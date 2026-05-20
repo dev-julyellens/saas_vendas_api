@@ -1,0 +1,61 @@
+---
+description: Arquitetura limpa, camadas e padrões do projeto Laravel
+alwaysApply: true
+---
+
+# Arquitetura e padrões do projeto
+
+## Princípios obrigatórios
+
+- Seguir **arquitetura limpa** com camadas bem definidas.
+- **Nunca** gerar código duplicado — extrair para `App\Core` ou reutilizar classes base existentes.
+- Usar **tipagem forte** em PHP 8.3+ (`declare(strict_types=1);`, tipos de retorno, propriedades tipadas, DTOs).
+- **Documentar** decisões importantes (comentários breves em classes base, ADRs em `docs/` quando a decisão for arquitetural).
+- Criar **testes automatizados** sempre que possível (`tests/Feature`, `tests/Unit` com PHPUnit).
+
+## Camadas e responsabilidades
+
+| Camada | Responsabilidade | Local |
+|--------|------------------|-------|
+| Controller | HTTP: validação (FormRequest), autorização, DTO, resposta JSON | `Http/Controllers/V1/` |
+| Service | Regras de negócio, transações, eventos | `Services/` extends `BaseService` |
+| Repository | Acesso a dados (Eloquent) | `Repositories/` extends `BaseRepository` |
+| DTO | Transporte tipado entre camadas | `DTOs/` extends `BaseDTO` |
+
+### Controllers finos
+
+Controllers **não** contêm regra de negócio, queries Eloquent nem transações.
+
+```php
+// ❌ EVITAR — lógica de negócio no controller
+public function store(Request $request) {
+    DB::transaction(fn () => Product::create($request->all()));
+}
+
+// ✅ CORRETO — delegar ao Service
+public function store(StoreProductRequest $request): JsonResponse {
+    $product = $this->service->store(ProductDTO::fromArray($request->validated()));
+    return $this->created(new ProductResource($product));
+}
+```
+
+### Services para regras complexas
+
+Orquestrar validações de domínio, `DB::transaction`, disparo de `event()` e Jobs em `*Service`, não no controller.
+
+### Repositories para dados
+
+Toda consulta/persistência Eloquent fica no `*Repository` (via `RepositoryInterface`). Services chamam o repository; controllers **não** chamam.
+
+## Estrutura de módulos
+
+Novos recursos em `app/Modules/{NomeModulo}/` com: `Routes`, `Providers`, `Http`, `Services`, `Repositories`, `DTOs`, `Models`, `Policies`.
+
+Reutilizar bases em `app/Core/`: `ApiController`, `BaseService`, `BaseRepository`, `BaseDTO`, `ApiResponse`.
+
+## Antes de entregar código
+
+1. Existe lógica repetida? → extrair.
+2. Controller só faz HTTP? → mover regra para Service.
+3. Query no lugar errado? → mover para Repository.
+4. Feature nova? → incluir ou esboçar teste PHPUnit.

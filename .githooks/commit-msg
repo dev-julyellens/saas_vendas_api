@@ -1,0 +1,30 @@
+#!/bin/sh
+# Valida Conventional Commits (português) — instale com: composer run setup:hooks
+
+commit_msg_file="$1"
+first_line=$(sed '/^#/d;/^$/d' "$commit_msg_file" | head -n 1)
+
+# Permite merges e reverts automáticos do Git
+case "$first_line" in
+  Merge*|Revert*) exit 0 ;;
+esac
+
+pattern='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\([^)]+\))?: .{3,}'
+
+if ! printf '%s\n' "$first_line" | grep -qE "$pattern"; then
+  echo ""
+  echo "❌ Mensagem de commit inválida."
+  echo ""
+  echo "   Use: <tipo>: <descrição curta em português>"
+  echo ""
+  echo "   Tipos: feat, fix, docs, style, refactor, perf, test, chore, ci, build"
+  echo "   Escopo (opcional): feat(auth): descrição"
+  echo ""
+  echo "   Exemplo: feat: adiciona endpoint de listagem de produtos"
+  echo ""
+  echo "   Sua primeira linha: ${first_line:-'(vazia)'}"
+  echo ""
+  exit 1
+fi
+
+exit 0

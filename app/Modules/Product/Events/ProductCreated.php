@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Modules\Product\Events;
+
+use App\Modules\Product\Models\Product;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class ProductCreated
+{
+    use Dispatchable;
+    use SerializesModels;
+
+    public function __construct(public Product $product)
+    {
+    }
+}

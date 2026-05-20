@@ -1,0 +1,21 @@
+# <tipo>: <descrição curta em português>
+#
+# <descrição detalhada (opcional)>
+#
+# Tipos (Conventional Commits):
+#   feat:     Nova funcionalidade
+#   fix:      Correção de bug
+#   docs:     Documentação
+#   style:    Formatação (não afeta código)
+#   refactor: Refatoração de código
+#   perf:     Melhoria de performance
+#   test:     Testes
+#   chore:    Tarefas de manutenção (build, config, etc.)
+#   ci:       Integração contínua
+#   build:    Build do projeto
+#
+# Exemplos:
+#   feat: adiciona cadastro de dependentes no módulo RH
+#   fix: corrige validação de CPF no formulário
+#   docs: atualiza README com instruções de instalação
+#   chore: atualiza dependências do Composer

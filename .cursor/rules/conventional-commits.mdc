@@ -1,0 +1,56 @@
+---
+description: Formato obrigatório de mensagens de commit (Conventional Commits em português)
+alwaysApply: true
+---
+
+# Mensagens de commit
+
+Todo commit **deve** seguir Conventional Commits com descrição em **português**.
+
+## Formato
+
+```
+<tipo>: <descrição curta em português>
+
+<descrição detalhada (opcional)>
+```
+
+- Primeira linha: tipo + dois pontos + espaço + resumo (máx. ~72 caracteres).
+- Corpo opcional: separado por linha em branco; explica o *porquê*, não só o *o quê*.
+- Escopo opcional: `feat(auth): adiciona login com JWT`.
+
+## Tipos permitidos
+
+| Tipo | Uso |
+|------|-----|
+| `feat` | Nova funcionalidade |
+| `fix` | Correção de bug |
+| `docs` | Documentação |
+| `style` | Formatação (não altera lógica) |
+| `refactor` | Refatoração |
+| `perf` | Performance |
+| `test` | Testes |
+| `chore` | Manutenção (build, config, deps) |
+| `ci` | Integração contínua |
+| `build` | Build do projeto |
+
+## Exemplos válidos
+
+```
+feat: adiciona cadastro de dependentes no módulo RH
+fix: corrige validação de CPF no formulário
+docs: atualiza README com instruções de instalação
+chore: atualiza dependências do Composer
+feat(product): adiciona filtro por categoria na listagem
+```
+
+## Exemplos inválidos
+
+```
+Adiciona produto          # sem tipo
+feat adiciona produto     # falta ": "
+FEAT: adiciona produto    # tipo em maiúsculas
+fix:                      # sem descrição
+```
+
+Ao criar commits via agente, use **sempre** este formato na mensagem do `git commit`.
