@@ -1,6 +1,8 @@
 # API — Autenticação e Autorização
 
-Base URL: `{APP_URL}/api/v1`
+Base URL: `{APP_URL}/api/v1` (Docker local: `http://localhost:8080/api/v1`)
+
+> O front-end (Vite) deve usar `VITE_API_BASE_URL=http://localhost:8080/api/v1`. Não use a porta 8000 com Docker.
 
 Todas as respostas seguem o envelope:
 

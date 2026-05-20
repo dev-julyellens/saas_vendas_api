@@ -15,7 +15,7 @@ Sistema **API ONLY** (sem Blade/Livewire) com **multi-tenant lógico** via colun
 ### 2. Estrutura modular (`app/Modules`)
 
 - Cada domínio (Product, Sale, Financial…) é um **bounded context** com Provider próprio.
-- Rotas versionadas em `/api/v1/*`.
+- Rotas versionadas em `/api/v1/`*.
 - Permite times trabalharem em módulos isolados e extrair microsserviços no futuro.
 
 ### 3. Camadas (Clean Architecture pragmática)
@@ -61,21 +61,25 @@ Demais módulos possuem Models, Migrations e rotas placeholder para expansão in
 
 ## RBAC
 
-| Tabela | Escopo |
-|--------|--------|
-| `permissions` | Global (seed) |
-| `roles` | Por `company_id` |
-| `role_user` | Usuário ↔ papel |
+
+| Tabela        | Escopo           |
+| ------------- | ---------------- |
+| `permissions` | Global (seed)    |
+| `roles`       | Por `company_id` |
+| `role_user`   | Usuário ↔ papel  |
+
 
 Permissões exemplo: `products.manage`, `sales.manage`.
 
 ## Endpoints principais
 
-| Método | Rota | Auth |
-|--------|------|------|
-| POST | `/api/v1/auth/login` | Público |
-| GET | `/api/v1/auth/me` | JWT + tenant |
-| CRUD | `/api/v1/products` | JWT + tenant + permission |
+
+| Método | Rota                 | Auth                      |
+| ------ | -------------------- | ------------------------- |
+| POST   | `/api/v1/auth/login` | Público                   |
+| GET    | `/api/v1/auth/me`    | JWT + tenant              |
+| CRUD   | `/api/v1/products`   | JWT + tenant + permission |
+
 
 ## Próximos passos sugeridos
 
@@ -83,3 +87,4 @@ Permissões exemplo: `products.manage`, `sales.manage`.
 2. Regras de comissão automática no evento `SaleCompleted`.
 3. Conciliação financeira ligada a vendas/devoluções.
 4. Testes de isolamento multi-tenant (tenant A não acessa dados de B).
+

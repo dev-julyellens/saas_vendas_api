@@ -81,7 +81,7 @@ return new class extends Migration
         {
             $table->uuid('id')->primary();
             $table->foreignUuid('company_id')->constrained('companies')->cascadeOnDelete();
-            $table->foreignUuid('parent_id')->nullable()->constrained('product_categories')->nullOnDelete();
+            $table->uuid('parent_id')->nullable();
             $table->string('name');
             $table->string('slug');
             $table->text('description')->nullable();
@@ -92,6 +92,15 @@ return new class extends Migration
 
             $table->unique(['company_id', 'slug']);
             $table->index(['company_id', 'parent_id']);
+        });
+
+        // FK auto-referenciada após a tabela existir (PostgreSQL exige PK única já criada).
+        Schema::table('product_categories', function (Blueprint $table)
+        {
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('product_categories')
+                ->nullOnDelete();
         });
 
         Schema::create('products', function (Blueprint $table)
@@ -159,7 +168,6 @@ return new class extends Migration
         if ($this->isPostgres())
         {
             DB::statement('ALTER TABLE stock_movements ADD COLUMN movement_type stock_movement_type NOT NULL');
-            DB::statement('ALTER TABLE stock_movements ADD CONSTRAINT stock_movements_quantity_positive CHECK (quantity > 0)');
         }
         else
         {

@@ -41,8 +41,9 @@ services:
     image: postgres:16-alpine
     container_name: saas_vendas_postgres
     restart: unless-stopped
+    # DB_PUBLISH_PORT = host (DBeaver); DB_PORT no .env = porta interna (5432) para o Laravel
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PUBLISH_PORT:-5432}:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE:-saas_vendas}
       POSTGRES_USER: ${DB_USERNAME:-saas}

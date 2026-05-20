@@ -14,17 +14,19 @@ Vendas confirmadas não podem ser alteradas nem canceladas.
 
 ## Endpoints
 
-| Método | Rota | Permissão | Descrição |
-|--------|------|-----------|-----------|
-| GET | `/sales` | view | Lista paginada com filtros |
-| POST | `/sales` | manage | Cria venda (rascunho) |
-| GET | `/sales/{id}` | view | Detalhe |
-| PUT | `/sales/{id}` | manage | Atualiza rascunho |
-| DELETE | `/sales/{id}` | manage | Exclui rascunho |
-| POST | `/sales/{id}/confirm` | manage | Confirma venda |
-| POST | `/sales/{id}/cancel` | manage | Cancela rascunho |
-| GET | `/sales/dashboard` | view | Resumo do período |
-| GET | `/sales/report` | view | Relatório consolidado |
+
+| Método | Rota                  | Permissão | Descrição                  |
+| ------ | --------------------- | --------- | -------------------------- |
+| GET    | `/sales`              | view      | Lista paginada com filtros |
+| POST   | `/sales`              | manage    | Cria venda (rascunho)      |
+| GET    | `/sales/{id}`         | view      | Detalhe                    |
+| PUT    | `/sales/{id}`         | manage    | Atualiza rascunho          |
+| DELETE | `/sales/{id}`         | manage    | Exclui rascunho            |
+| POST   | `/sales/{id}/confirm` | manage    | Confirma venda             |
+| POST   | `/sales/{id}/cancel`  | manage    | Cancela rascunho           |
+| GET    | `/sales/dashboard`    | view      | Resumo do período          |
+| GET    | `/sales/report`       | view      | Relatório consolidado      |
+
 
 ## Criar venda
 
@@ -72,3 +74,4 @@ Informe `consignment_id` e, em cada item, `consignment_item_id`. O consignado de
 - **Estoque direto**: movimento `saida` na empresa.
 - **Estoque consignado**: movimento `venda` no revendedor + `consignment_operations` (`venda_parcial`).
 - **Comissão**: `total × representative.commission_rate` ao confirmar (status `pending`).
+
