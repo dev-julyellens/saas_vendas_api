@@ -19,7 +19,25 @@ API REST multi-tenant para gestão de vendas consignadas (Laravel 12, PostgreSQL
 
 > O projeto exige **PHP ≥ 8.3**. O XAMPP com PHP 8.2 **não** executa `php artisan` localmente; use os comandos **dentro do container** (veja abaixo).
 
-## Início rápido (Docker)
+## Início rápido — stack completo (recomendado)
+
+Use o orquestrador unificado em `saas_vendas_web/infra` (API + SPA + Redis + filas):
+
+```bash
+cd ../saas_vendas_web/infra
+cp .env.example .env
+./scripts/setup.sh   # ou .\scripts\setup.ps1 no Windows
+```
+
+| Recurso | URL |
+|---------|-----|
+| App + API | `http://localhost` |
+| API | `http://localhost/api/v1` |
+| Health | `http://localhost/health` |
+
+Login demo: `admin@demo.com` / `password123`
+
+## Início rápido — apenas API (Docker local)
 
 ```bash
 cp .env.example .env
@@ -35,9 +53,7 @@ docker compose exec app php artisan migrate --seed
 | API (nginx) | `http://localhost:8080/api/v1` |
 | Health check | `http://localhost:8080/up` |
 
-Login demo: `admin@demo.com` / `password123`
-
-**Não use** `php artisan serve` com Docker — a API já é servida pelo **nginx** na porta **8080**. A porta **8000** não está exposta no host.
+**Não use** `php artisan serve` com Docker — a API já é servida pelo **nginx** na porta **8080**.
 
 ## PostgreSQL e DBeaver
 
@@ -92,6 +108,19 @@ docker compose exec app php artisan test
 ```
 
 Os testes usam o ambiente configurado em `phpunit.xml`. Com Docker, o PHP 8.3 do container atende ao requisito do `composer.json`.
+
+## Infraestrutura completa
+
+Stack unificado (gateway, web, api, postgres, redis, queue, scheduler, backup):
+
+→ [`../saas_vendas_web/infra/README.md`](../saas_vendas_web/infra/README.md)
+
+Comandos úteis:
+
+```bash
+php artisan health:check          # DB + Redis
+docker compose exec app php artisan queue:work redis
+```
 
 ## Documentação
 

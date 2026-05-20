@@ -21,6 +21,7 @@ class ModuleServiceProvider extends ServiceProvider
         \App\Modules\Product\Providers\ProductServiceProvider::class,
         \App\Modules\Consignment\Providers\ConsignmentServiceProvider::class,
         \App\Modules\Sale\Providers\SaleServiceProvider::class,
+        \App\Modules\Analytics\Providers\AnalyticsServiceProvider::class,
         \App\Modules\ReturnOrder\Providers\ReturnOrderServiceProvider::class,
         \App\Modules\Commission\Providers\CommissionServiceProvider::class,
         \App\Modules\Financial\Providers\FinancialServiceProvider::class,

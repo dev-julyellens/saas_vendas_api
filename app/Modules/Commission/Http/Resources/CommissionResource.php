@@ -20,6 +20,20 @@ class CommissionResource extends JsonResource
             'amount' => (float) $this->amount,
             'status' => $this->status->value,
             'paid_at' => $this->paid_at?->toIso8601String(),
+            'representative' => $this->whenLoaded('representative', fn() => [
+                'id' => $this->representative->id,
+                'name' => $this->representative->name,
+            ]),
+            'sale' => $this->whenLoaded('sale', fn() => [
+                'id' => $this->sale->id,
+                'code' => $this->sale->code,
+                'total' => (float) $this->sale->total,
+                'reseller' => $this->sale->relationLoaded('reseller') && $this->sale->reseller ? [
+                    'id' => $this->sale->reseller->id,
+                    'name' => $this->sale->reseller->name,
+                ] : null,
+            ]),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

@@ -46,4 +46,27 @@ class CommissionService
             ->where('status', CommissionStatus::Pending)
             ->update(['status' => CommissionStatus::Cancelled]);
     }
+
+    public function paginate(int $perPage, array $filters = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $this->commissions->paginateWithFilters($perPage, $filters);
+    }
+
+    public function find(string $id): Commission
+    {
+        return $this->commissions->findWithRelations($id);
+    }
+
+    public function updateStatus(string $id, CommissionStatus $status): Commission
+    {
+        $commission = $this->commissions->findOrFail($id);
+        $data = ['status' => $status];
+
+        if ($status === CommissionStatus::Paid)
+        {
+            $data['paid_at'] = now();
+        }
+
+        return $this->commissions->update($id, $data);
+    }
 }
