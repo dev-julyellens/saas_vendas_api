@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\ReturnOrder\Models;
+namespace App\Modules\Consignment\Models;
 
 use App\Core\Models\BaseLineModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\Product\Models\Product;
 use App\Modules\Sale\Models\SaleItem;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ReturnItem extends BaseLineModel
+class ConsignmentItem extends BaseLineModel
 {
     use HasFactory;
 
     protected $fillable = [
         'company_id',
-        'return_id',
+        'consignment_id',
         'product_id',
-        'sale_item_id',
         'quantity',
         'unit_price',
     ];
@@ -31,9 +31,9 @@ class ReturnItem extends BaseLineModel
         ];
     }
 
-    public function returnOrder(): BelongsTo
+    public function consignment(): BelongsTo
     {
-        return $this->belongsTo(ReturnOrder::class, 'return_id');
+        return $this->belongsTo(Consignment::class);
     }
 
     public function product(): BelongsTo
@@ -41,8 +41,8 @@ class ReturnItem extends BaseLineModel
         return $this->belongsTo(Product::class);
     }
 
-    public function saleItem(): BelongsTo
+    public function saleItems(): HasMany
     {
-        return $this->belongsTo(SaleItem::class);
+        return $this->hasMany(SaleItem::class);
     }
 }

@@ -1,26 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Modules\Rbac\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
+use App\Core\Models\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * Permissões globais do sistema — seed único, compartilhadas entre tenants.
+ * Permissões por tenant (company_id) — seed replicado em cada empresa.
  */
-class Permission extends Model
+class Permission extends BaseModel
 {
-    use HasUuids;
+    use HasFactory;
 
-    public $incrementing = false;
-
-    protected $keyType = 'string';
-
-    protected $fillable = ['name', 'slug', 'module', 'description'];
+    protected $fillable = [
+        'company_id',
+        'name',
+        'slug',
+        'module',
+        'description',
+    ];
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'permission_role');
+        return $this->belongsToMany(Role::class, 'role_permissions')
+            ->withPivot('company_id')
+            ->withTimestamps();
     }
 }

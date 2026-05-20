@@ -1,28 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Modules\Rbac\Models\Permission;
+use Database\Seeders\Concerns\SeedsTenantRbac;
 use Illuminate\Database\Seeder;
 
+/**
+ * Permissões são por tenant — use TenantBootstrapSeeder ou DemoTenantSeeder.
+ * Mantido vazio para não duplicar registros sem company_id.
+ */
 class PermissionSeeder extends Seeder
 {
+    use SeedsTenantRbac;
+
     public function run(): void
     {
-        $permissions = [
-            ['name' => 'Gerenciar produtos', 'slug' => 'products.manage', 'module' => 'product'],
-            ['name' => 'Gerenciar vendas', 'slug' => 'sales.manage', 'module' => 'sale'],
-            ['name' => 'Gerenciar consignação', 'slug' => 'consignment.manage', 'module' => 'consignment'],
-            ['name' => 'Gerenciar financeiro', 'slug' => 'financial.manage', 'module' => 'financial'],
-            ['name' => 'Gerenciar usuários', 'slug' => 'users.manage', 'module' => 'rbac'],
-        ];
-
-        foreach ($permissions as $permission)
-        {
-            Permission::query()->updateOrCreate(
-                ['slug' => $permission['slug']],
-                $permission
-            );
-        }
+        // Definições em SeedsTenantRbac::permissionDefinitions().
+        // Aplicadas por DemoTenantSeeder / MasterAdminSeeder na criação da empresa.
     }
 }

@@ -2,23 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Sale\Models;
+namespace App\Modules\Consignment\Models;
 
-use App\Core\Enums\SaleStatus;
+use App\Core\Enums\ConsignmentStatus;
 use App\Core\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Core\Models\Concerns\HasStockMovements;
-use App\Modules\Commission\Models\Commission;
-use App\Modules\Consignment\Models\Consignment;
-use App\Modules\Customer\Models\Customer;
 use App\Modules\Representative\Models\Representative;
 use App\Modules\Reseller\Models\Reseller;
 use App\Modules\ReturnOrder\Models\ReturnOrder;
+use App\Modules\Sale\Models\Sale;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Sale extends BaseModel
+class Consignment extends BaseModel
 {
     use HasFactory;
     use HasStockMovements;
@@ -26,25 +23,22 @@ class Sale extends BaseModel
     protected $fillable = [
         'company_id',
         'reseller_id',
-        'customer_id',
         'representative_id',
-        'consignment_id',
         'code',
-        'subtotal',
-        'discount',
-        'total',
         'status',
-        'sold_at',
+        'consigned_at',
+        'expected_return_at',
+        'closed_at',
+        'notes',
     ];
 
     protected function casts(): array
     {
         return [
-            'status' => SaleStatus::class,
-            'subtotal' => 'decimal:2',
-            'discount' => 'decimal:2',
-            'total' => 'decimal:2',
-            'sold_at' => 'datetime',
+            'status' => ConsignmentStatus::class,
+            'consigned_at' => 'date',
+            'expected_return_at' => 'date',
+            'closed_at' => 'datetime',
         ];
     }
 
@@ -53,29 +47,19 @@ class Sale extends BaseModel
         return $this->belongsTo(Reseller::class);
     }
 
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(Customer::class);
-    }
-
     public function representative(): BelongsTo
     {
         return $this->belongsTo(Representative::class);
     }
 
-    public function consignment(): BelongsTo
-    {
-        return $this->belongsTo(Consignment::class);
-    }
-
     public function items(): HasMany
     {
-        return $this->hasMany(SaleItem::class);
+        return $this->hasMany(ConsignmentItem::class);
     }
 
-    public function commission(): HasOne
+    public function sales(): HasMany
     {
-        return $this->hasOne(Commission::class);
+        return $this->hasMany(Sale::class);
     }
 
     public function returns(): HasMany
